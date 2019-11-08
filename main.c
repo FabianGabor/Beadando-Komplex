@@ -20,8 +20,6 @@ struct data data[9];
 
 void parseStr (char str[255])
 {
-    //printf("%s\n", str);
-
     int i=0;
     int data_tmp[14];
     char delim[] = " ";
@@ -45,7 +43,7 @@ void parseStr (char str[255])
     data[ data_tmp[0] ].did_work++;
     data[ data_tmp[0] ].date[ data_tmp[1] ]++;
 
-    for (i=2; i<12; i+=2)
+    for (i=2; i<14; i+=2)
     {
         data[ data_tmp[0] ].pizza[ data_tmp[1] ][ data_tmp[i+1] ] += data_tmp[i]; // same ID can have multiple identical day records with different pizza amounts -> add them together
     }
@@ -116,7 +114,7 @@ void read_file(char filename[30])
     fclose(file);
 }
 
-int main()
+void init_data ()
 {
     for (int i=0; i<9; i++)
     {
@@ -124,10 +122,10 @@ int main()
         for (int j=0; j<30; j++)
             data[i].date[j] = 0;
     }
+}
 
-    if (create_file("in.txt", 50)) return 1;
-    read_file("in.txt");
-
+void print_data ()
+{
     for (int i=0; i<9; i++)
     {
         if (data[i].did_work>0)
@@ -151,6 +149,39 @@ int main()
             printf("\n");
         }
     }
+}
+
+int top_pizza_1 ()
+{
+    int pizza_count[6] = {0,0,0,0,0,0};
+
+    for (int id=0; id<9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=0; date<30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        pizza_count[type] += data[id].pizza[date][type];
+    }
+
+    for (int i=0; i<6; i++)
+        printf("%d ", pizza_count[i]);
+
+    return 0;
+}
+
+int main()
+{
+    init_data();
+    //if (create_file("in.txt", 2)) return 1;
+    read_file("in.txt");
+
+    print_data();
+
+
+    // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
+    top_pizza_1();
+
 
     return 0;
 }
