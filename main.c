@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include <unistd.h>
+//#include <unistd.h>
 #include <limits.h>
 
 
@@ -9,18 +10,55 @@ FILE *file;
 
 
 //futársorszáma dátum db fajta db fajta
-
+// 1 + 1 + 2*6
+/*
 struct date {
     int type[6];
 };
 
-struct id {
+struct data {
     int id;
     struct date date[30];
 };
 
-struct id data[1000];
+struct data data[1000];
+*/
+struct data {
+    int pizza[30][6];
+};
+struct data data[9];
 
+
+
+void parseStr (char str[255])
+{
+    int i=0;
+    int data_tmp[14];
+    char delim[] = " ";
+    char *ptr = strtok(str, delim);
+
+    for (i=0; i<14; i++)
+        data_tmp[i] = 0;
+
+    i=0;
+    while(ptr != NULL)
+    {
+        if (atoi(ptr) >0)
+            data_tmp[i] = atoi(ptr);
+        else
+            data_tmp[i] = (*ptr - 'A');
+
+        //printf("'%s'\n", ptr);
+        //printf("%s\n", data_tmp[i]);
+        ptr = strtok(NULL, delim);
+        i++;
+    }
+
+    for (i=0; i<14; i++)
+        printf("%2d ", data_tmp[i]);
+    printf("\n");
+
+}
 
 int create_file(char filename[30], int rows)
 {
@@ -66,25 +104,28 @@ void read_file(char filename[30])
         strcat(cwd,"\\..\\");
         strcat(cwd,filename);
     }
-    else return 1;
+    //else return 1;
 
     file = fopen(cwd, "r");
 
     //char c = fgetc(file);
     char str[255];
-    int i=0;
-    int date, amount,type;
+    int row=0;
 
     while( fgets(str, 255, file) != NULL )
     {
+        /*
         data[i].id = (int)str[0]-'0';
         data[i].date[(int)str[2]-'0'].type[(int)str[4]-'0'] = (int)str[6]-'0';
-        i++;
+        */
+        parseStr(str);
+        row++;
     }
 
+    /*
     for (int row=0; row<i-1; row++)
         printf("%d\n", data[row].date[18].type[1]);
-
+    */
 
     /*
     while (c != EOF)
