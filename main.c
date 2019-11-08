@@ -38,21 +38,15 @@ void parseStr (char str[255])
         else
             data_tmp[i] = (*ptr - 'A');
 
-        printf("%d ", data_tmp[i]);
-
         ptr = strtok(NULL, delim);
         i++;
     }
-    printf("\n");
 
-
-    printf("Working with ID: %d\n", data_tmp[0]);
     data[ data_tmp[0] ].did_work++;
     data[ data_tmp[0] ].date[ data_tmp[1] ]++;
 
     for (i=2; i<14; i+=2)
-    {
-        printf("Working with ID: %d\n", data_tmp[0]);
+    {        
         data[ data_tmp[0] ].pizza[ data_tmp[1] ][ data_tmp[i+1] ] += data_tmp[i]; // same ID can have multiple identical day records with different pizza amounts -> add them together        
     }
 }
@@ -111,7 +105,6 @@ void read_file(char filename[30])
 
 
     while( fgets(str, 255, file) != NULL )
-    //fgets(str, 255, file);
     {
         parseStr(str);
         str[0] = '\0';
@@ -133,14 +126,6 @@ void init_data ()
 
 void print_data ()
 {
-    for (int id=1; id<=9; id++)
-    {
-        printf("ID: %d\n", id);
-        printf("Work count: %d\n", data[id].did_work);
-    }
-    printf("\n\n\n");
-
-
     for (int id=1; id<=9; id++)
     {
         if (data[id].did_work>0)
@@ -284,7 +269,7 @@ int top_pizza_dude()
 
 int worst_pizza_day()
 {
-    int day_count[30] = {0};
+    int day_count[31] = {0};
     int min_pizza = 0;
 
     for (int id=1; id<=9; id++)
@@ -298,21 +283,35 @@ int worst_pizza_day()
 
     // min search
     min_pizza = day_count[0];
-    for (int i=0; i<=30; i++)
+    for (int i=1; i<=30; i++)
         if (day_count[i]<min_pizza)
             min_pizza = day_count[i];
 
     printf("Daily pizza amounts:\n");
     printf("Day:\t");
-    for (int i=0; i<=30; i++)
+    for (int i=1; i<=30; i++)
         //if (day_count[i] == min_pizza)
             printf("%4d ", i);
     printf("\n");
     printf("Amount:\t");
-    for (int i=0; i<=30; i++)
+    for (int i=1; i<=30; i++)
         //if (day_count[i] == min_pizza)
             printf("%4d ", day_count[i]);
     printf("\n\n");
+
+    printf("Worst pizza day(s):\n");
+    printf("Day:\t");
+    for (int i=1; i<=30; i++)
+        if (day_count[i] == min_pizza)
+            printf("%4d ", i);
+    printf("\n");
+    printf("Amount:\t");
+    for (int i=1; i<=30; i++)
+        if (day_count[i] == min_pizza)
+            printf("%4d ", day_count[i]);
+    printf("\n\n");
+
+
 
     return 0;
 }
@@ -321,11 +320,8 @@ int worst_pizza_day()
 int main()
 {
     init_data();
-    if (create_file("in.txt", 10)) return 1;
-    //printf("Before read_file %d\n", data[7].did_work);
+    if (create_file("in.txt", 100)) return 1;
     read_file("in.txt");
-
-    //printf(" After read_file %d\n\n", data[7].did_work);
 
     print_data();
 /*
@@ -338,9 +334,9 @@ int main()
 
     // 3. Melyik futár szállította ki a legtöbb pizzát a hónapban?
     top_pizza_dude();
-
+*/
     // 4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
     worst_pizza_day();
-*/
+
     return 0;
 }
