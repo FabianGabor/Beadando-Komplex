@@ -6,8 +6,13 @@
 
 FILE *file;
 
-//futársorszáma dátum db fajta db fajta
+/*
+ *  0    1   2   3    4   5
+ * ID dátum db fajta db fajta
+*/
 struct data {
+    int did_work;
+    int date[30];
     int pizza[30][6];
 };
 struct data data[9];
@@ -15,6 +20,8 @@ struct data data[9];
 
 void parseStr (char str[255])
 {
+    //printf("%s\n", str);
+
     int i=0;
     int data_tmp[14];
     char delim[] = " ";
@@ -35,10 +42,18 @@ void parseStr (char str[255])
         i++;
     }
 
-    for (i=0; i<14; i++)
-        printf("%2d ", data_tmp[i]);
-    printf("\n");
+    data[ data_tmp[0] ].did_work++;
+    data[ data_tmp[0] ].date[ data_tmp[1] ]++;
 
+    for (i=2; i<12; i+=2)
+    {
+        data[ data_tmp[0] ].pizza[ data_tmp[1] ][ data_tmp[i+1] ] += data_tmp[i]; // same ID can have multiple identical day records with different pizza amounts -> add them together
+    }
+/*
+    for (i=0; i<14; i++)
+        printf("%d ", data_tmp[i]);
+    printf("\n\n");
+    */
 }
 
 int create_file(char filename[30], int rows)
@@ -57,8 +72,8 @@ int create_file(char filename[30], int rows)
 
     for (int i=0; i<rows; i++)
     {
-        id = rand() % 9; // 0-9
-        date = rand() % 30 + 1; // 1-30
+        id = rand() % 9 + 1; // 1-9
+        date = rand() % 29 + 1; // 1-30
 
         fprintf(file, "%d %d", id, date);
 
@@ -103,8 +118,39 @@ void read_file(char filename[30])
 
 int main()
 {
-    //if (create_file("in.txt", 20)) return 1;
+    for (int i=0; i<9; i++)
+    {
+        data[i].did_work = 0;
+        for (int j=0; j<30; j++)
+            data[i].date[j] = 0;
+    }
+
+    if (create_file("in.txt", 50)) return 1;
     read_file("in.txt");
+
+    for (int i=0; i<9; i++)
+    {
+        if (data[i].did_work>0)
+        {
+            printf("ID: %d\n", i);
+            for (int date=0; date<30; date++)
+            {
+                if (data[i].date[date]>0)
+                {
+                    printf("\tDay: %d\n", date);
+                    printf("\t\t Pizza type:\t");
+                    for (int type=0; type<6; type++)
+                        printf("%c ", type+'A');
+                    printf("\n");
+                    printf("\t\t Pizza amount:\t");
+                    for (int type=0; type<6; type++)
+                        printf("%d ", data[i].pizza[date][type]);
+                    printf("\n");
+                }
+            }
+            printf("\n");
+        }
+    }
 
     return 0;
 }
