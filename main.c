@@ -4,30 +4,13 @@
 #include <limits.h>
 #include <unistd.h>
 
-
-
 FILE *file;
 
-
 //futársorszáma dátum db fajta db fajta
-// 1 + 1 + 2*6
-/*
-struct date {
-    int type[6];
-};
-
-struct data {
-    int id;
-    struct date date[30];
-};
-
-struct data data[1000];
-*/
 struct data {
     int pizza[30][6];
 };
 struct data data[9];
-
 
 
 void parseStr (char str[255])
@@ -48,8 +31,6 @@ void parseStr (char str[255])
         else
             data_tmp[i] = (*ptr - 'A');
 
-        //printf("'%s'\n", ptr);
-        //printf("%s\n", data_tmp[i]);
         ptr = strtok(NULL, delim);
         i++;
     }
@@ -98,6 +79,9 @@ int create_file(char filename[30], int rows)
 
 void read_file(char filename[30])
 {
+    char str[255];
+    int row=0;
+
     char cwd[255];
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
@@ -108,49 +92,11 @@ void read_file(char filename[30])
 
     file = fopen(cwd, "r");
 
-    //char c = fgetc(file);
-    char str[255];
-    int row=0;
-
     while( fgets(str, 255, file) != NULL )
-    {
-        /*
-        data[i].id = (int)str[0]-'0';
-        data[i].date[(int)str[2]-'0'].type[(int)str[4]-'0'] = (int)str[6]-'0';
-        */
+    {        
         parseStr(str);
         row++;
     }
-
-    /*
-    for (int row=0; row<i-1; row++)
-        printf("%d\n", data[row].date[18].type[1]);
-    */
-
-    /*
-    while (c != EOF)
-    {
-        //printf ("%c", c);
-        data[i].id = (int)c;
-        c = fgetc(file); // space
-        date = (int)fgetc(file); // date
-        c = fgetc(file); // space
-        amount = (int)fgetc(file); // amount
-        c = fgetc(file); // space
-        type = (int)fgetc(file); // type
-        data[i].date[date].type[(int)c] = amount;
-        c = fgetc(file); // maybe space
-
-        do
-        {
-            c = fgetc(file); // space
-            data[i].date[date].type[type] = (int)c;
-            c = fgetc(file);
-        }
-        while (c != '\0')
-        i++;
-    }
-    */
 
     fclose(file);
 }
