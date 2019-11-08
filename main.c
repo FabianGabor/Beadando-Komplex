@@ -24,6 +24,11 @@ struct data {
 struct data data[9];
 int pizza_price[6] = {1000,1100,1200,1300,1400,1500};
 
+struct daily_income {
+    int day;
+    int income;
+} order;
+
 
 void parseStr (char str[255])
 {
@@ -70,7 +75,7 @@ int create_file(char filename[30], int rows)
     for (int i=0; i<rows; i++)
     {
         id = rand() % 9 + 1; // 1-9
-        date = rand() % 29 + 1; // 1-30
+        date = rand() % 30 + 1; // 1-30
 
         fprintf(file, "%d %d", id, date);
 
@@ -154,9 +159,12 @@ void print_data ()
     }
 
 }
-
-int cmpfunc (void * a, void * b) {
-    return ( *(int*)b - *(int*)a );
+/* qsort struct comparision function (income) */
+int compare(void *a, void *b)
+{
+    struct daily_income *ia = (struct daily_income *)a;
+    struct daily_income *ib = (struct daily_income *)b;
+    return ib->income - ia->income;
 }
 
 int top_pizza_on_day(int day)
@@ -401,10 +409,7 @@ void hardest_working_pizza_dude()
 
 void most_daily_incomes()
 {
-    struct daily_income {
-        int day;
-        int income;
-    };
+
     struct daily_income daily_income[31] = {0};
 
     int max_income = 0;
@@ -421,33 +426,26 @@ void most_daily_incomes()
                         daily_income[date].income += data[id].pizza[date][type] * pizza_price[type];
     }
 
+
+    printf("Daily income:\n");
+
     for (int date=1; date<=30; date++)
         if (daily_income[date].income>0)
-            printf("Day %2d income: %d\n", daily_income[date].day, daily_income[date].income);
+            printf("Day %2d income: %8d\n", daily_income[date].day, daily_income[date].income);
+    printf("\n\n");
 
-    /*
+    qsort(daily_income, 31, sizeof(order), compare);
 
-    for (int date=1; date<=30; date++)
-        if (daily_income[date]>0)
-            printf("Day %2d income: %d\n", date, daily_income[date]);
-    printf("\n");
-
-    for (int date=1; date<=30; date++)
-        if (daily_income[date]>max_income)
-            max_income = daily_income[date];
-
-    printf("Best 4 days by income:\n");
-    for (int date=1; date<=30; date++)
-        if (daily_income[date]==max_income)
-            printf("Day %2d income: %d\n", date, daily_income[date]);
-    printf("\n");
-    */
+    printf("4 days with the most income:\n");
+    for (int date=1; date<=4; date++)
+        if (daily_income[date].income>0)
+            printf("Day %2d income: %8d\n", daily_income[date].day, daily_income[date].income);
 }
 
 int main()
 {
     init_data();
-    if (create_file("in.txt", 5)) return 1;
+    if (create_file("in.txt", 1000)) return 1;
     read_file("in.txt");
 
     print_data();
