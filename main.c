@@ -316,6 +316,46 @@ int worst_pizza_day()
     return 0;
 }
 
+void best_pizza_in_month()
+{
+    int pizza_count[6] = {0};
+    int max_pizza = 0;
+
+    for (int id=1; id<=9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=0; date<30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        pizza_count[type] += data[id].pizza[date][type];
+    }
+
+    // max search
+    for (int i=0; i<6; i++)
+        if (pizza_count[i]>max_pizza)
+            max_pizza = pizza_count[i];
+
+    printf("Pizza stats in month\n");
+    for (int i=0; i<6; i++)
+            printf("%6c ", i+'A');
+    printf("\n");
+    for (int i=0; i<6; i++)
+            printf("%6d ", pizza_count[i]);
+    printf("\n\n");
+
+    printf("Best pizza(s) in month\n");
+    for (int i=0; i<6; i++)
+        if (pizza_count[i] == max_pizza)
+            printf("%6c ", i+'A');
+    printf("\n");
+    for (int i=0; i<6; i++)
+        if (pizza_count[i] == max_pizza)
+            printf("%6d ", pizza_count[i]);
+    printf("\n\n");
+
+    return 0;
+}
+
 
 int main()
 {
@@ -337,6 +377,9 @@ int main()
 */
     // 4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
     worst_pizza_day();
+
+    // 5. Melyik típusú pizza volt a legkelendőbb a hónap során?
+    best_pizza_in_month();
 
     return 0;
 }
