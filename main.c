@@ -116,7 +116,7 @@ void read_file(char filename[30])
 
 void init_data ()
 {
-    for (int i=0; i<9; i++)
+    for (int i=1; i<=9; i++)
     {
         data[i].did_work = 0;
         for (int j=0; j<30; j++)
@@ -126,14 +126,14 @@ void init_data ()
 
 void print_data ()
 {
-    for (int i=0; i<9; i++)
+    for (int id=1; id<=9; id++)
     {
-        if (data[i].did_work>0)
+        if (data[id].did_work>0)
         {
-            printf("ID: %d\n", i);
+            printf("ID: %d\n", id);
             for (int date=0; date<30; date++)
             {
-                if (data[i].date[date]>0)
+                if (data[id].date[date]>0)
                 {
                     printf("\tDay: %d\n", date);
                     printf("\t\t Pizza type:\t");
@@ -142,7 +142,7 @@ void print_data ()
                     printf("\n");
                     printf("\t\t Pizza amount:\t");
                     for (int type=0; type<6; type++)
-                        printf("%d ", data[i].pizza[date][type]);
+                        printf("%d ", data[id].pizza[date][type]);
                     printf("\n");
                 }
             }
@@ -161,7 +161,7 @@ int top_pizza_on_day(int day)
     int date = day;
     int max_pizza = 0;
 
-    for (int id=0; id<9; id++)
+    for (int id=1; id<=9; id++)
     {
         if (data[id].did_work)
             //for (int date=0; date<30; date++)
@@ -178,11 +178,11 @@ int top_pizza_on_day(int day)
 
     for (int i=0; i<6; i++)
         if (pizza_count[i] == max_pizza)
-        printf("%6c ", i+'A');
+            printf("%6c ", i+'A');
     printf("\n");
     for (int i=0; i<6; i++)
         if (pizza_count[i] == max_pizza)
-        printf("%6d ", pizza_count[i]);
+            printf("%6d ", pizza_count[i]);
     printf("\n\n");
 
     return 0;
@@ -194,7 +194,7 @@ int total_pizza_on_day(int day)
     int date = day;
     int total_pizza = 0;
 
-    for (int id=0; id<9; id++)
+    for (int id=1; id<=9; id++)
     {
         if (data[id].did_work)
             //for (int date=0; date<30; date++)
@@ -218,12 +218,58 @@ int total_pizza_on_day(int day)
     return 0;
 }
 
+int top_pizza_dude()
+{
+    int pizza_dude_count[9] = {0,0,0,0,0,0,0,0,0};
+    int max_pizza = 0;
+
+
+    for (int id=1; id<=9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=0; date<30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        pizza_dude_count[id] += data[id].pizza[date][type];
+    }
+
+    printf("Pizza dudes monthly stats:\n");
+    printf("ID:\t");
+    for (int i=1; i<=9; i++)
+        printf("%6d ", i);
+    printf("\n");
+
+    printf("Amount:\t");
+    for (int i=1; i<=9; i++)
+        printf("%6d ", pizza_dude_count[i]);
+    printf("\n\n");
+
+    // max search
+    for (int i=0; i<6; i++)
+        if (pizza_dude_count[i]>max_pizza)
+            max_pizza = pizza_dude_count[i];
+    printf("Best pizza dude(s) in month:\n");
+
+    printf("ID:\t");
+    for (int i=1; i<=9; i++)
+        if (pizza_dude_count[i] == max_pizza)
+            printf("%6d ", i);
+    printf("\n");
+
+    printf("Amount:\t");
+    for (int i=1; i<=9; i++)
+        if (pizza_dude_count[i] == max_pizza)
+            printf("%6d ", pizza_dude_count[i]);
+    printf("\n\n");
+
+    return 0;
+}
 
 
 int main()
 {
     init_data();
-    if (create_file("in.txt", 50)) return 1;
+    if (create_file("in.txt", 1000)) return 1;
     read_file("in.txt");
 
     print_data();
@@ -234,6 +280,9 @@ int main()
 
     // 2. Hány pizzát szállítottak ki összesen elsején?
     total_pizza_on_day(1);
+
+    // 3. Melyik futár szállította ki a legtöbb pizzát a hónapban?
+    top_pizza_dude();
 
     return 0;
 }
