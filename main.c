@@ -170,8 +170,6 @@ int top_pizza_on_day(int day)
                         pizza_count[type] += data[id].pizza[date][type];
     }
 
-    //qsort(pizza_count, 6, sizeof(int), cmpfunc);
-
     // max search
     for (int i=0; i<6; i++)
         if (pizza_count[i]>max_pizza)
@@ -185,7 +183,37 @@ int top_pizza_on_day(int day)
     for (int i=0; i<6; i++)
         if (pizza_count[i] == max_pizza)
         printf("%6d ", pizza_count[i]);
+    printf("\n\n");
+
+    return 0;
+}
+
+int total_pizza_on_day(int day)
+{
+    int pizza_count[6] = {0,0,0,0,0,0};
+    int date = day;
+    int total_pizza = 0;
+
+    for (int id=0; id<9; id++)
+    {
+        if (data[id].did_work)
+            //for (int date=0; date<30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                    {
+                        pizza_count[type] += data[id].pizza[date][type];
+                        total_pizza += data[id].pizza[date][type];
+                    }
+    }
+
+    printf("Total pizza(s) on day %d: %d\n", day, total_pizza);
+
+    for (int i=0; i<6; i++)
+        printf("%6c ", i+'A');
     printf("\n");
+    for (int i=0; i<6; i++)
+        printf("%6d ", pizza_count[i]);
+    printf("\n\n");
 
     return 0;
 }
@@ -204,6 +232,8 @@ int main()
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
     top_pizza_on_day(1);
 
+    // 2. Hány pizzát szállítottak ki összesen elsején?
+    total_pizza_on_day(1);
 
     return 0;
 }
