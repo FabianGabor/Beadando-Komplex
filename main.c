@@ -1,3 +1,7 @@
+/*
+ * https://github.com/FabianGabor/Beadando-Komplex
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
