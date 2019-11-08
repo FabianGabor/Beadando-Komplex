@@ -110,8 +110,8 @@ void read_file(char filename[30])
 
 
 
-    //while( fgets(str, 255, file) != NULL )
-    fgets(str, 255, file);
+    while( fgets(str, 255, file) != NULL )
+    //fgets(str, 255, file);
     {
         parseStr(str);
         str[0] = '\0';
@@ -168,7 +168,7 @@ void print_data ()
 
 }
 
-int cmpfunc (const void * a, const void * b) {
+int cmpfunc (void * a, void * b) {
     return ( *(int*)b - *(int*)a );
 }
 
@@ -321,7 +321,7 @@ int worst_pizza_day()
 int main()
 {
     init_data();
-    //if (create_file("in.txt", 2)) return 1;
+    if (create_file("in.txt", 10)) return 1;
     //printf("Before read_file %d\n", data[7].did_work);
     read_file("in.txt");
 
