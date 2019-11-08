@@ -19,8 +19,10 @@ struct data {
     int did_work;
     int date[31];
     int pizza[30][6];
+
 };
 struct data data[9];
+int pizza_price[6] = {1000,1100,1200,1300,1400,1500};
 
 
 void parseStr (char str[255])
@@ -324,7 +326,7 @@ void best_pizza_in_month()
     for (int id=1; id<=9; id++)
     {
         if (data[id].did_work)
-            for (int date=0; date<30; date++)
+            for (int date=1; date<=30; date++)
                 if (data[id].date[date])
                     for (int type=0; type<6; type++)
                         pizza_count[type] += data[id].pizza[date][type];
@@ -352,15 +354,42 @@ void best_pizza_in_month()
         if (pizza_count[i] == max_pizza)
             printf("%6d ", pizza_count[i]);
     printf("\n\n");
+}
 
-    return 0;
+void calculate_income()
+{
+    int income_by_id[10] = {0};
+    int max_income = 0;
+
+    for (int id=1; id<=9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=1; date<=30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        income_by_id[id] += data[id].pizza[date][type] * pizza_price[type];
+    }
+
+    for (int id=1; id<=9; id++)
+        printf("%d 's income: %d\n", id, income_by_id[id]);
+    printf("\n");
+
+    for (int id=1; id<=9; id++)
+        if (income_by_id[id]>max_income)
+            max_income = income_by_id[id];
+
+    printf("Most incomes by ID's:\n");
+    for (int id=1; id<=9; id++)
+        if (income_by_id[id]==max_income)
+            printf("%d 's income: %d\n", id, income_by_id[id]);
+    printf("\n");
 }
 
 
 int main()
 {
     init_data();
-    if (create_file("in.txt", 100)) return 1;
+    if (create_file("in.txt", 5)) return 1;
     read_file("in.txt");
 
     print_data();
@@ -380,6 +409,9 @@ int main()
 
     // 5. Melyik típusú pizza volt a legkelendőbb a hónap során?
     best_pizza_in_month();
+
+    // 6. Hányas számú futár szedte be a legtöbb pénzt a hónapban?
+    calculate_income();
 
     return 0;
 }
