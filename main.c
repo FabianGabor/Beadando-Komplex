@@ -1,4 +1,5 @@
 /*
+ * Folyamatban
  * https://github.com/FabianGabor/Beadando-Komplex
  */
 
@@ -16,7 +17,7 @@ FILE *file;
 */
 struct data {
     int did_work;
-    int date[30];
+    int date[31];
     int pizza[30][6];
 };
 struct data data[9];
@@ -25,37 +26,35 @@ struct data data[9];
 void parseStr (char str[255])
 {
     int i=0;
-    int data_tmp[14];
+    int data_tmp[14] = {0};
     char delim[] = " ";
     char *ptr = strtok(str, delim);
 
-    for (i=0; i<14; i++)
-        data_tmp[i] = 0;
-
     i=0;
     while(ptr != NULL)
-    {
+    {        
         if (atoi(ptr) >0)
             data_tmp[i] = atoi(ptr);
         else
             data_tmp[i] = (*ptr - 'A');
 
+        printf("%d ", data_tmp[i]);
+
         ptr = strtok(NULL, delim);
         i++;
     }
+    printf("\n");
 
+
+    printf("Working with ID: %d\n", data_tmp[0]);
     data[ data_tmp[0] ].did_work++;
     data[ data_tmp[0] ].date[ data_tmp[1] ]++;
 
     for (i=2; i<14; i+=2)
     {
-        data[ data_tmp[0] ].pizza[ data_tmp[1] ][ data_tmp[i+1] ] += data_tmp[i]; // same ID can have multiple identical day records with different pizza amounts -> add them together
+        printf("Working with ID: %d\n", data_tmp[0]);
+        data[ data_tmp[0] ].pizza[ data_tmp[1] ][ data_tmp[i+1] ] += data_tmp[i]; // same ID can have multiple identical day records with different pizza amounts -> add them together        
     }
-/*
-    for (i=0; i<14; i++)
-        printf("%d ", data_tmp[i]);
-    printf("\n\n");
-    */
 }
 
 int create_file(char filename[30], int rows)
@@ -109,9 +108,13 @@ void read_file(char filename[30])
 
     file = fopen(cwd, "r");
 
-    while( fgets(str, 255, file) != NULL )
-    {        
+
+
+    //while( fgets(str, 255, file) != NULL )
+    fgets(str, 255, file);
+    {
         parseStr(str);
+        str[0] = '\0';
         row++;
     }
 
@@ -123,7 +126,7 @@ void init_data ()
     for (int i=1; i<=9; i++)
     {
         data[i].did_work = 0;
-        for (int j=0; j<30; j++)
+        for (int j=0; j<=30; j++)
             data[i].date[j] = 0;
     }
 }
@@ -132,10 +135,19 @@ void print_data ()
 {
     for (int id=1; id<=9; id++)
     {
+        printf("ID: %d\n", id);
+        printf("Work count: %d\n", data[id].did_work);
+    }
+    printf("\n\n\n");
+
+
+    for (int id=1; id<=9; id++)
+    {
         if (data[id].did_work>0)
         {
             printf("ID: %d\n", id);
-            for (int date=0; date<30; date++)
+            printf("Work count: %d\n", data[id].did_work);
+            for (int date=0; date<=30; date++)
             {
                 if (data[id].date[date]>0)
                 {
@@ -153,6 +165,7 @@ void print_data ()
             printf("\n");
         }
     }
+
 }
 
 int cmpfunc (const void * a, const void * b) {
@@ -161,7 +174,7 @@ int cmpfunc (const void * a, const void * b) {
 
 int top_pizza_on_day(int day)
 {
-    int pizza_count[6] = {0,0,0,0,0,0};
+    int pizza_count[6] = {0};
     int date = day;
     int max_pizza = 0;
 
@@ -194,7 +207,7 @@ int top_pizza_on_day(int day)
 
 int total_pizza_on_day(int day)
 {
-    int pizza_count[6] = {0,0,0,0,0,0};
+    int pizza_count[6] = {0};
     int date = day;
     int total_pizza = 0;
 
@@ -224,14 +237,14 @@ int total_pizza_on_day(int day)
 
 int top_pizza_dude()
 {
-    int pizza_dude_count[9] = {0,0,0,0,0,0,0,0,0};
+    int pizza_dude_count[9] = {0};
     int max_pizza = 0;
 
 
     for (int id=1; id<=9; id++)
     {
         if (data[id].did_work)
-            for (int date=0; date<30; date++)
+            for (int date=0; date<=30; date++)
                 if (data[id].date[date])
                     for (int type=0; type<6; type++)
                         pizza_dude_count[id] += data[id].pizza[date][type];
@@ -269,15 +282,53 @@ int top_pizza_dude()
     return 0;
 }
 
+int worst_pizza_day()
+{
+    int day_count[30] = {0};
+    int min_pizza = 0;
+
+    for (int id=1; id<=9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=0; date<=30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        day_count[date] += data[id].pizza[date][type];
+    }
+
+    // min search
+    min_pizza = day_count[0];
+    for (int i=0; i<=30; i++)
+        if (day_count[i]<min_pizza)
+            min_pizza = day_count[i];
+
+    printf("Daily pizza amounts:\n");
+    printf("Day:\t");
+    for (int i=0; i<=30; i++)
+        //if (day_count[i] == min_pizza)
+            printf("%4d ", i);
+    printf("\n");
+    printf("Amount:\t");
+    for (int i=0; i<=30; i++)
+        //if (day_count[i] == min_pizza)
+            printf("%4d ", day_count[i]);
+    printf("\n\n");
+
+    return 0;
+}
+
 
 int main()
 {
     init_data();
-    if (create_file("in.txt", 1000)) return 1;
+    //if (create_file("in.txt", 2)) return 1;
+    //printf("Before read_file %d\n", data[7].did_work);
     read_file("in.txt");
 
-    print_data();
+    //printf(" After read_file %d\n\n", data[7].did_work);
 
+    print_data();
+/*
 
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
     top_pizza_on_day(1);
@@ -288,5 +339,8 @@ int main()
     // 3. Melyik futár szállította ki a legtöbb pizzát a hónapban?
     top_pizza_dude();
 
+    // 4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
+    worst_pizza_day();
+*/
     return 0;
 }
