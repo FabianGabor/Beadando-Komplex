@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-//#include <unistd.h>
 #include <limits.h>
+#include <unistd.h>
+
 
 
 FILE *file;
@@ -62,7 +62,7 @@ void parseStr (char str[255])
 
 int create_file(char filename[30], int rows)
 {
-    int id, date, amount, random;
+    int id, date, amount;
 
     char cwd[255];
     if (getcwd(cwd, sizeof(cwd)) != NULL)
@@ -81,7 +81,7 @@ int create_file(char filename[30], int rows)
 
         fprintf(file, "%d %d", id, date);
 
-        random = rand()%9+1;
+
         for (int j=0; j<6; j++) // 0-6 => A-F
         {
             amount = rand() % 9; // 0-9
