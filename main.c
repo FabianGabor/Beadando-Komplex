@@ -151,36 +151,58 @@ void print_data ()
     }
 }
 
-int top_pizza_1 ()
+int cmpfunc (const void * a, const void * b) {
+    return ( *(int*)b - *(int*)a );
+}
+
+int top_pizza_on_day(int day)
 {
     int pizza_count[6] = {0,0,0,0,0,0};
+    int date = day;
+    int max_pizza = 0;
 
     for (int id=0; id<9; id++)
     {
         if (data[id].did_work)
-            for (int date=0; date<30; date++)
+            //for (int date=0; date<30; date++)
                 if (data[id].date[date])
                     for (int type=0; type<6; type++)
                         pizza_count[type] += data[id].pizza[date][type];
     }
 
+    //qsort(pizza_count, 6, sizeof(int), cmpfunc);
+
+    // max search
     for (int i=0; i<6; i++)
-        printf("%d ", pizza_count[i]);
+        if (pizza_count[i]>max_pizza)
+            max_pizza = pizza_count[i];
+    printf("Top pizza(s) on day %d\n", day);
+
+    for (int i=0; i<6; i++)
+        if (pizza_count[i] == max_pizza)
+        printf("%6c ", i+'A');
+    printf("\n");
+    for (int i=0; i<6; i++)
+        if (pizza_count[i] == max_pizza)
+        printf("%6d ", pizza_count[i]);
+    printf("\n");
 
     return 0;
 }
 
+
+
 int main()
 {
     init_data();
-    //if (create_file("in.txt", 2)) return 1;
+    if (create_file("in.txt", 50)) return 1;
     read_file("in.txt");
 
     print_data();
 
 
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
-    top_pizza_1();
+    top_pizza_on_day(1);
 
 
     return 0;
