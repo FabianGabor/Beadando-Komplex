@@ -409,9 +409,7 @@ void hardest_working_pizza_dude()
 
 void most_daily_incomes()
 {
-
     struct daily_income daily_income[31] = {0};
-
     int max_income = 0;
 
     for (int date=1; date<=30; date++)
@@ -440,6 +438,24 @@ void most_daily_incomes()
     for (int date=1; date<=4; date++)
         if (daily_income[date].income>0)
             printf("Day %2d income: %8d\n", daily_income[date].day, daily_income[date].income);
+    printf("\n");
+}
+
+void total_pizza_in_month()
+{
+    int total_pizza = 0;
+
+    for (int id=1; id<=9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=1; date<=30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        total_pizza += data[id].pizza[date][type];
+    }
+
+    printf("Total pizza in month: %d\n", total_pizza);
+    printf("\n");
 }
 
 int main()
@@ -474,6 +490,9 @@ int main()
 
     // 8. Írassa ki csökkenő sorrendben az első 4 legeredményesebb nap bevételeit.
     most_daily_incomes();
+
+    // 9. Hány pizzát szállítottak ki összesen a hónap során?
+    total_pizza_in_month();
 
     return 0;
 }
