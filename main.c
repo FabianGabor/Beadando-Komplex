@@ -458,14 +458,38 @@ void total_pizza_in_month()
     printf("\n");
 }
 
+void pizza_type_zero_order(int day)
+{
+    if (day == 0)
+    {
+        for (int id=1; id<=9; id++)
+            if (data[id].did_work)
+            {
+                for (int date=1; date<=30; date++)
+                    for (int type=0; type<6; type++)
+                        if (data[id].pizza[date][type] == 0)
+                        {
+                            printf("On day %d no orders of pizza type %c.\n", date, type+'A');
+                        }
+            }
+    }
+    else
+        for (int id=1; id<=9; id++)
+            if (data[id].did_work)
+                for (int type=0; type<6; type++)
+                    if (data[id].pizza[day][type] == 0)
+                        printf("On day %d no orders of pizza type %c.\n", day, type+'A');
+}
+
 int main()
 {
+
+
     init_data();
     if (create_file("in.txt", 1000)) return 1;
     read_file("in.txt");
 
     print_data();
-
 
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
     top_pizza_on_day(1);
@@ -493,6 +517,10 @@ int main()
 
     // 9. Hány pizzát szállítottak ki összesen a hónap során?
     total_pizza_in_month();
+
+    // 10. Kérje be egy nap sorszámát, majd írassa ki, hogy aznap mely típusú pizzából nem rendeltek egy darabot sem!
+    printf("Which day to check for no orders of some type of pizza? (Enter 0 to check each day) ");
+    pizza_type_zero_order( getchar()-48 );
 
     return 0;
 }
