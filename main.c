@@ -313,8 +313,6 @@ int worst_pizza_day()
             printf("%4d ", day_count[i]);
     printf("\n\n");
 
-
-
     return 0;
 }
 
@@ -371,7 +369,8 @@ void calculate_income()
     }
 
     for (int id=1; id<=9; id++)
-        printf("%d 's income: %d\n", id, income_by_id[id]);
+        if (data[id].did_work)
+            printf("%d 's income: %d\n", id, income_by_id[id]);
     printf("\n");
 
     for (int id=1; id<=9; id++)
@@ -381,10 +380,69 @@ void calculate_income()
     printf("Most incomes by ID's:\n");
     for (int id=1; id<=9; id++)
         if (income_by_id[id]==max_income)
-            printf("%d 's income: %d\n", id, income_by_id[id]);
+            printf("%d's income: %d\n", id, income_by_id[id]);
     printf("\n");
 }
 
+void hardest_working_pizza_dude()
+{
+    int max_workday = 0;
+
+    for (int id=1; id<=9; id++)
+        if (data[id].did_work > max_workday)
+            max_workday = data[id].did_work;
+
+    printf("Hardest working by ID:\n");
+    for (int id=1; id<=9; id++)
+        if (data[id].did_work == max_workday)
+            printf("%d's worked days: %d\n", id, max_workday);
+    printf("\n");
+}
+
+void most_daily_incomes()
+{
+    struct daily_income {
+        int day;
+        int income;
+    };
+    struct daily_income daily_income[31] = {0};
+
+    int max_income = 0;
+
+    for (int date=1; date<=30; date++)
+        daily_income[date].day = date;
+
+    for (int id=1; id<=9; id++)
+    {
+        if (data[id].did_work)
+            for (int date=1; date<=30; date++)
+                if (data[id].date[date])
+                    for (int type=0; type<6; type++)
+                        daily_income[date].income += data[id].pizza[date][type] * pizza_price[type];
+    }
+
+    for (int date=1; date<=30; date++)
+        if (daily_income[date].income>0)
+            printf("Day %2d income: %d\n", daily_income[date].day, daily_income[date].income);
+
+    /*
+
+    for (int date=1; date<=30; date++)
+        if (daily_income[date]>0)
+            printf("Day %2d income: %d\n", date, daily_income[date]);
+    printf("\n");
+
+    for (int date=1; date<=30; date++)
+        if (daily_income[date]>max_income)
+            max_income = daily_income[date];
+
+    printf("Best 4 days by income:\n");
+    for (int date=1; date<=30; date++)
+        if (daily_income[date]==max_income)
+            printf("Day %2d income: %d\n", date, daily_income[date]);
+    printf("\n");
+    */
+}
 
 int main()
 {
@@ -393,7 +451,7 @@ int main()
     read_file("in.txt");
 
     print_data();
-/*
+
 
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
     top_pizza_on_day(1);
@@ -403,7 +461,7 @@ int main()
 
     // 3. Melyik futár szállította ki a legtöbb pizzát a hónapban?
     top_pizza_dude();
-*/
+
     // 4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
     worst_pizza_day();
 
@@ -412,6 +470,12 @@ int main()
 
     // 6. Hányas számú futár szedte be a legtöbb pénzt a hónapban?
     calculate_income();
+
+    // 7. Melyik futár dolgozott a legtöbb napon a hónap során?
+    hardest_working_pizza_dude();
+
+    // 8. Írassa ki csökkenő sorrendben az első 4 legeredményesebb nap bevételeit.
+    most_daily_incomes();
 
     return 0;
 }
