@@ -483,8 +483,6 @@ void pizza_type_zero_order(int day)
 
 int main()
 {
-
-
     init_data();
     if (create_file("in.txt", 1000)) return 1;
     read_file("in.txt");
