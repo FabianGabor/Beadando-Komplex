@@ -19,9 +19,8 @@ struct data {
     int did_work;
     int date[31];
     int pizza[30][6];
-
-};
-struct data data[9];
+} data[9];
+//struct data data[9];
 int pizza_price[6] = {1000,1100,1200,1300,1400,1500};
 
 struct daily_income {
@@ -139,18 +138,18 @@ void print_data ()
         {
             printf("ID: %d\n", id);
             printf("Work count: %d\n", data[id].did_work);
-            for (int date=0; date<=30; date++)
+            for (int date=1; date<=30; date++)
             {
                 if (data[id].date[date]>0)
                 {
                     printf("\tDay: %d\n", date);
                     printf("\t\t Pizza type:\t");
                     for (int type=0; type<6; type++)
-                        printf("%c ", type+'A');
+                        printf("%3c ", type+'A');
                     printf("\n");
                     printf("\t\t Pizza amount:\t");
                     for (int type=0; type<6; type++)
-                        printf("%d ", data[id].pizza[date][type]);
+                        printf("%3d ", data[id].pizza[date][type]);
                     printf("\n");
                 }
             }
@@ -460,6 +459,7 @@ void total_pizza_in_month()
 
 void pizza_type_zero_order(int day)
 {
+    int pizza_count[6] = {0};
     if (day == 0)
     {
         for (int id=1; id<=9; id++)
@@ -478,13 +478,15 @@ void pizza_type_zero_order(int day)
             if (data[id].did_work)
                 for (int type=0; type<6; type++)
                     if (data[id].pizza[day][type] == 0)
+                    {
                         printf("On day %d no orders of pizza type %c.\n", day, type+'A');
+                    }
 }
 
 int main()
 {
     init_data();
-    if (create_file("in.txt", 1000)) return 1;
+    //if (create_file("in.txt", 1000)) return 1;
     read_file("in.txt");
 
     print_data();
