@@ -483,7 +483,9 @@ void pizza_type_zero_order(int day)
             if (no_pizza == 0) printf("On day %2d there are orders of each pizza type.\n", date);
             else
             {
-                printf("On day %2d no orders of pizza type: ", date);
+                char c;
+                if (no_pizza>1) c='s'; else c=' ';
+                printf("On day %2d there are no orders of pizza type: %c", c, date);
                 for (int type=0; type<6; type++)
                     if ( pizza_count[type] == 0 )
                         printf("%c ", type+'A');
@@ -508,11 +510,16 @@ void pizza_type_zero_order(int day)
 
         for (int type=0; type<6; type++)
             if ( pizza_count[type] == 0 )
-            {
-                printf("On day %2d no orders of pizza type %c.\n", day, type+'A');
                 no_pizza++;
-            }
         if (no_pizza == 0) printf("On day %2d there are orders of each pizza type.\n", day);
+        else
+        {
+            printf("On day %2d there are no orders of pizza type: ", day);
+            for (int type=0; type<6; type++)
+                if ( pizza_count[type] == 0 )
+                    printf("%c ", type+'A');
+            printf("\n");
+        }
     }
 
 }
@@ -521,7 +528,7 @@ int main()
 {
     init_data();
     //if (create_file("in.txt", 90)) return 1;
-    create_file("in.txt", 90);
+    //create_file("in.txt", 90);
     read_file("in.txt");
 
     print_data();
