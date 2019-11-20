@@ -19,9 +19,8 @@ struct data {
     int did_work;
     int date[31];
     int pizza[30][6];
-
-};
-struct data data[9];
+} data[9];
+//struct data data[9];
 int pizza_price[6] = {1000,1100,1200,1300,1400,1500};
 
 struct daily_income {
@@ -139,18 +138,18 @@ void print_data ()
         {
             printf("ID: %d\n", id);
             printf("Work count: %d\n", data[id].did_work);
-            for (int date=0; date<=30; date++)
+            for (int date=1; date<=30; date++)
             {
                 if (data[id].date[date]>0)
                 {
                     printf("\tDay: %d\n", date);
                     printf("\t\t Pizza type:\t");
                     for (int type=0; type<6; type++)
-                        printf("%c ", type+'A');
+                        printf("%3c ", type+'A');
                     printf("\n");
                     printf("\t\t Pizza amount:\t");
                     for (int type=0; type<6; type++)
-                        printf("%d ", data[id].pizza[date][type]);
+                        printf("%3d ", data[id].pizza[date][type]);
                     printf("\n");
                 }
             }
@@ -462,29 +461,74 @@ void pizza_type_zero_order(int day)
 {
     if (day == 0)
     {
-        for (int id=1; id<=9; id++)
-            if (data[id].did_work)
-            {
-                for (int date=1; date<=30; date++)
+        for (int date=1; date<=30; date++)
+        {
+            int pizza_count[6] = {0};
+            int no_pizza = 0;
+
+            for (int id=1; id<=9; id++)
+                if (data[id].did_work)
+                {
                     for (int type=0; type<6; type++)
-                        if (data[id].pizza[date][type] == 0)
+                        if (data[id].pizza[date][type] != 0)
                         {
-                            printf("On day %d no orders of pizza type %c.\n", date, type+'A');
+                            pizza_count[ type ]++;
+                            //printf("On day %d no orders of pizza type %c.\n", date, type+'A');
                         }
+                }
+
+            for (int type=0; type<6; type++)
+                if ( pizza_count[type] == 0 )
+                    no_pizza++;
+            if (no_pizza == 0) printf("On day %2d there are orders of each pizza type.\n", date);
+            else
+            {
+                char c;
+                if (no_pizza>1) c='s'; else c=' ';
+                printf("On day %2d there are no orders of pizza type: %c", c, date);
+                for (int type=0; type<6; type++)
+                    if ( pizza_count[type] == 0 )
+                        printf("%c ", type+'A');
+                printf("\n");
             }
+        }
+
     }
     else
+    {
+        int pizza_count[6] = {0};
+        int no_pizza = 0;
+
         for (int id=1; id<=9; id++)
             if (data[id].did_work)
                 for (int type=0; type<6; type++)
-                    if (data[id].pizza[day][type] == 0)
-                        printf("On day %d no orders of pizza type %c.\n", day, type+'A');
+                    if (data[id].pizza[day][type] != 0)
+                    {
+                        pizza_count[ type ]++;
+                        // printf("On day %d no orders of pizza type %c.\n", day, type+'A');
+                    }
+
+        for (int type=0; type<6; type++)
+            if ( pizza_count[type] == 0 )
+                no_pizza++;
+        if (no_pizza == 0) printf("On day %2d there are orders of each pizza type.\n", day);
+        else
+        {
+            printf("On day %2d there are no orders of pizza type: ", day);
+            for (int type=0; type<6; type++)
+                if ( pizza_count[type] == 0 )
+                    printf("%c ", type+'A');
+            printf("\n");
+        }
+    }
+
 }
 
 int main()
 {
     init_data();
-    if (create_file("in.txt", 1000)) return 1;
+    //if (create_file("in.txt", 90)) return 1;
+    //create_file("in.txt", 90);
     read_file("in.txt");
 
     print_data();
