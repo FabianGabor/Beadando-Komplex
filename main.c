@@ -298,7 +298,7 @@ int worst_pizza_day()
     for (int id=1; id<=9; id++)
     {
         if (data[id].did_work)
-            for (int date=0; date<=30; date++)
+            for (int date=1; date<=30; date++)
                 if (data[id].date[date])
                     for (int type=0; type<6; type++)
                         day_count[date] += data[id].pizza[date][type];
@@ -307,8 +307,11 @@ int worst_pizza_day()
     // min search
     min_pizza = day_count[0];
     for (int i=1; i<=30; i++)
-        if (day_count[i]<min_pizza)
+    {
+        if (min_pizza == 0) min_pizza = day_count[i];
+        if (day_count[i]<min_pizza && day_count[i] != 0)
             min_pizza = day_count[i];
+    }
 
     //printf("Daily pizza amounts:\n");
     wprintf(L"%s\n", L"Pizzák napi mennyisége:");
@@ -326,7 +329,22 @@ int worst_pizza_day()
     printf("\n\n");
 
     //printf("Worst pizza day(s):\n");
-    wprintf(L"%s\n", L"Eze(ke)n a nap(ok)on szállították ki a legkevesebb pizzát:");
+    wprintf(L"%s\n", L"Eze(ke)n a nap(ok)on szállították ki a legkevesebb pizzát (0 rendelés + a 0-tól különbözö legkevesebb):");
+    //printf("Day:\t");
+    wprintf(L"%11s", L"Nap:");
+    for (int i=1; i<=30; i++)
+        if (day_count[i] <= min_pizza)
+            printf("%4d ", i);
+    printf("\n");
+    //printf("Amount:\t");
+    wprintf(L"%11s", L"Mennyiség:");
+    for (int i=1; i<=30; i++)
+        if (day_count[i] <= min_pizza)
+            printf("%4d ", day_count[i]);
+    printf("\n\n");
+
+    //printf("Worst pizza day(s):\n");
+    wprintf(L"%s\n", L"Eze(ke)n a nap(ok)on szállították ki a legkevesebb pizzát (0 rendelés kizárva):");
     //printf("Day:\t");
     wprintf(L"%11s", L"Nap:");
     for (int i=1; i<=30; i++)
@@ -337,6 +355,21 @@ int worst_pizza_day()
     wprintf(L"%11s", L"Mennyiség:");
     for (int i=1; i<=30; i++)
         if (day_count[i] == min_pizza)
+            printf("%4d ", day_count[i]);
+    printf("\n\n");
+
+    //printf("Worst pizza day(s):\n");
+    wprintf(L"%s\n", L"Eze(ke)n a nap(ok)on egyáltalán nem volt rendelés:");
+    //printf("Day:\t");
+    wprintf(L"%11s", L"Nap:");
+    for (int i=1; i<=30; i++)
+        if (day_count[i] == 0)
+            printf("%4d ", i);
+    printf("\n");
+    //printf("Amount:\t");
+    wprintf(L"%11s", L"Mennyiség:");
+    for (int i=1; i<=30; i++)
+        if (day_count[i] == 0)
             printf("%4d ", day_count[i]);
     printf("\n\n");
 
@@ -582,21 +615,19 @@ void warn_enter ()
 
 int main()
 {
-    init_data();
-    //if (create_file("in.txt", 100)) return 1;
-    create_file("in.txt", 4);
-    read_file("in.txt");
-
     setlocale(LC_ALL, "");
+    init_data();
+    if (create_file("in.txt", 100)) return 1;
+    //create_file("in.txt", 5);
+    read_file("in.txt");
 
     print_data();
 
-    int wait;
-    int debug;
+    int wait = 0;
+
     do
     {
         wprintf(L"%s", L"Szeretnél minden feladat után megállni Enter lenyomásig? (i/n) ");
-        //scanf(" %c", &wait);
         wait = getchar();
         getchar();
         wait -= 'n';
@@ -604,42 +635,43 @@ int main()
     while (wait > 0);
     printf("\n\n");
 
+
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
-    //top_pizza_on_day(1);
+    top_pizza_on_day(1);
     if (wait) warn_enter();
 
     // 2. Hány pizzát szállítottak ki összesen elsején?
-    //total_pizza_on_day(1);
+    total_pizza_on_day(1);
     if (wait) warn_enter();
 
     // 3. Melyik futár szállította ki a legtöbb pizzát a hónapban?
-    //top_pizza_dude();
+    top_pizza_dude();
     if (wait) warn_enter();
 
-    // 4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
+     //4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
     worst_pizza_day();
     if (wait) warn_enter();
 
     // 5. Melyik típusú pizza volt a legkelendőbb a hónap során?
-    //best_pizza_in_month();
+    best_pizza_in_month();
     if (wait) warn_enter();
 
     // 6. Hányas számú futár szedte be a legtöbb pénzt a hónapban?
-    //calculate_income();
+    calculate_income();
     if (wait) warn_enter();
 
     // 7. Melyik futár dolgozott a legtöbb napon a hónap során?
-    //hardest_working_pizza_dude();
+    hardest_working_pizza_dude();
     if (wait) warn_enter();
 
     // 8. Írassa ki csökkenő sorrendben az első 4 legeredményesebb nap bevételeit.
-    //most_daily_incomes();
+    most_daily_incomes();
     if (wait) warn_enter();
 
     // 9. Hány pizzát szállítottak ki összesen a hónap során?
-    //total_pizza_in_month();
+    total_pizza_in_month();
     if (wait) warn_enter();
-/*
+
     // 10. Kérje be egy nap sorszámát, majd írassa ki, hogy aznap mely típusú pizzából nem rendeltek egy darabot sem!
     char s[3];
     int day;
@@ -651,6 +683,7 @@ int main()
     }
     while ((day<0) || (day>30));
     pizza_type_zero_order( day );
-*/
+
+    wprintf(L"\n\n%s\n\n", L"*** Fábián Gábor - 2019. november - Nyíregyházi Egyetem - Programtervezö informatikus, 1. év - CXNU8T ***");
     return 0;
 }
