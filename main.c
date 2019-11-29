@@ -231,14 +231,14 @@ int total_pizza_on_day(int day)
 
 int top_pizza_dude()
 {
-    int pizza_dude_count[9] = {0};
+    int pizza_dude_count[10] = {0};
     int max_pizza = 0;
 
 
     for (int id=1; id<=9; id++)
     {
         if (data[id].did_work)
-            for (int date=0; date<=30; date++)
+            for (int date=1; date<=30; date++)
                 if (data[id].date[date])
                     for (int type=0; type<6; type++)
                         pizza_dude_count[id] += data[id].pizza[date][type];
@@ -256,7 +256,7 @@ int top_pizza_dude()
     printf("\n\n");
 
     // max search
-    for (int i=0; i<6; i++)
+    for (int i=0; i<=9; i++)
         if (pizza_dude_count[i]>max_pizza)
             max_pizza = pizza_dude_count[i];
     printf("Best pizza dude(s) in month:\n");
@@ -393,17 +393,27 @@ void calculate_income()
 
 void hardest_working_pizza_dude()
 {
-    int max_workday = 0;
+    int count_days[10][31] = {0};
+    for (int id=1; id<=9; id++)
+        for (int date=1; date<=30; date++)
+            if (data[id].date[date] > 0)
+                count_days[id][date] = 1;
 
     for (int id=1; id<=9; id++)
-        if (data[id].did_work > max_workday)
-            max_workday = data[id].did_work;
+        for (int date=1; date<=30; date++)
+            count_days[id][0] += count_days[id][date];
+
+    int max_workday = 0;
+    for (int id=1; id<=9; id++)
+        if ( count_days[id][0] > max_workday )
+            max_workday = count_days[id][0];
 
     printf("Hardest working by ID:\n");
     for (int id=1; id<=9; id++)
-        if (data[id].did_work == max_workday)
+        if ( count_days[id][0] == max_workday )
             printf("%d's worked days: %d\n", id, max_workday);
     printf("\n");
+
 }
 
 void most_daily_incomes()
@@ -528,41 +538,41 @@ int main()
 {
     init_data();
     //if (create_file("in.txt", 90)) return 1;
-    //create_file("in.txt", 90);
+    create_file("in.txt", 1000);
     read_file("in.txt");
 
     print_data();
 
     // 1. Melyik típusú pizzából szállítottak ki legtöbbet elsején?
-    top_pizza_on_day(1);
+    //top_pizza_on_day(1);
 
     // 2. Hány pizzát szállítottak ki összesen elsején?
-    total_pizza_on_day(1);
+    //total_pizza_on_day(1);
 
     // 3. Melyik futár szállította ki a legtöbb pizzát a hónapban?
-    top_pizza_dude();
+    //top_pizza_dude();
 
     // 4. Hanyadikán szállították ki a legkevesebb pizzát a hónapban?
-    worst_pizza_day();
+    //worst_pizza_day();
 
     // 5. Melyik típusú pizza volt a legkelendőbb a hónap során?
-    best_pizza_in_month();
+    //best_pizza_in_month();
 
     // 6. Hányas számú futár szedte be a legtöbb pénzt a hónapban?
-    calculate_income();
+    //calculate_income();
 
     // 7. Melyik futár dolgozott a legtöbb napon a hónap során?
     hardest_working_pizza_dude();
 
     // 8. Írassa ki csökkenő sorrendben az első 4 legeredményesebb nap bevételeit.
-    most_daily_incomes();
+    //most_daily_incomes();
 
     // 9. Hány pizzát szállítottak ki összesen a hónap során?
-    total_pizza_in_month();
+    //total_pizza_in_month();
 
     // 10. Kérje be egy nap sorszámát, majd írassa ki, hogy aznap mely típusú pizzából nem rendeltek egy darabot sem!
-    printf("Which day to check for no orders of some type of pizza? (Enter 0 to check each day) ");
-    pizza_type_zero_order( getchar()-48 );
+    //printf("Which day to check for no orders of some type of pizza? (Enter 0 to check each day) ");
+    //pizza_type_zero_order( getchar()-48 );
 
     return 0;
 }
